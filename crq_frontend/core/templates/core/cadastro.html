@@ -3,193 +3,125 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <title>Cadastro de Clientes</title>
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Cadastro de Clientes</h1>
+    <div class="container">
+        <h1>Cadastro de Clientes</h1>
 
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        <!-- Botão Sair no topo direito -->
+        <form action="{% url 'logout' %}" method="post" class="logout-form">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">Sair</button>
+        </form>
 
-    <!-- Logout -->
-    <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Sair</button>
-    </form>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-    <!-- BUSCAR CADASTRO POR CPF -->
-    <form action="{% url 'cadastro' %}" method="get">
-        <h2>Buscar Cadastro</h2>
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf_cadastro" name="cpf" required>
-        <button type="submit">Buscar</button>
-    </form>
+        <!-- BUSCAR CADASTRO POR CPF -->
+        <form action="{% url 'cadastro' %}" method="get">
+            <h2>Buscar Cadastro</h2>
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf_cadastro" name="cpf" required>
+            <button type="submit">Buscar</button>
+        </form>
 
-    <!-- EXIBIR RESULTADO DA BUSCA -->
-    {% if cadastros %}
-        <h3>Resultados da Busca:</h3>
-        <ul>
-            {% for cadastro in cadastros %}
-                <li>
-                    <strong>{{ cadastro.nome_completo }}</strong> - CPF: {{ cadastro.cpf }} <br>
-                    Telefone: {{ cadastro.telefone }} | Email: {{ cadastro.email }} <br>
-                    Estado: {{ cadastro.estado }} | Bairro: {{ cadastro.bairro }} <br>
-                    Sexo: {{ cadastro.sexo }} | Idade: {{ cadastro.idade }} <br>
-                    Assunto: {{ cadastro.assunto }} | Cliente: {{ cadastro.cliente }} <br>
-                    Metodologia: {{ cadastro.metodologia }} | Classe Social: {{ cadastro.classe_social }} <br>
-                    Ocupação: {{ cadastro.ocupacao }} | Recrutador: {{ cadastro.nome_recrutador }} | Digitador: {{ cadastro.digitador }} <br>
-                    Data Participação: {{ cadastro.data_participacao }} <br>
-                    Criado em: {{ cadastro.carimbo_data_hora }} <br>
-                    <hr>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        <!-- EXIBIR RESULTADO DA BUSCA -->
+        {% if cadastros %}
+            <h3>Resultados da Busca:</h3>
+            <button id="btnOcultarResultados">Ocultar Resultados</button>
+            <ul id="resultadosBusca">
+                {% for cadastro in cadastros %}
+                    <li>
+                        <button class="cadastro-nome" data-id="{{ forloop.counter }}">
+                            {{ cadastro.nome_completo }} <span class="seta">▼</span>
+                        </button>
+                        <div id="detalhes-{{ forloop.counter }}" class="cadastro-detalhes" style="display: none;">
+                            CPF: {{ cadastro.cpf }}<br>
+                            Telefone: {{ cadastro.telefone }}<br>
+                            Email: {{ cadastro.email }}<br>
+                            Estado: {{ cadastro.estado }}<br>
+                            Bairro: {{ cadastro.bairro }}<br>
+                            Sexo: {{ cadastro.sexo }}<br>
+                            Idade: {{ cadastro.idade }}<br>
+                            Assunto: {{ cadastro.assunto }}<br>
+                            Cliente: {{ cadastro.cliente }}<br>
+                            Metodologia: {{ cadastro.metodologia }}<br>
+                            Classe Social: {{ cadastro.classe_social }}<br>
+                            Ocupação: {{ cadastro.ocupacao }}<br>
+                            Recrutador: {{ cadastro.nome_recrutador }}<br>
+                            Digitador: {{ cadastro.digitador }}<br>
+                            Data Participação: {{ cadastro.data_participacao }}<br>
+                            Criado em: {{ cadastro.carimbo_data_hora }}<br>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-    <!-- FORM DE CRIAÇÃO -->
-    <form action="{% url 'cadastro' %}" method="post">
-        {% csrf_token %}
-        <h2>Criar Cadastro</h2>
-        <input type="hidden" name="action" value="criar">
+        <!-- Botão para abrir modal de novo cadastro -->
+        <button id="btnAbrirModal">Novo Cadastro</button>
 
-        <label>Nome Completo:</label>
-        <input type="text" name="nome_completo" required><br>
+        <!-- Modal de criação de cadastro -->
+        <div id="modalCadastro" class="modal">
+            <div class="modal-content">
+                <span id="fecharModal" class="close">&times;</span>
+                <h2>Criar Cadastro</h2>
+                <form action="{% url 'cadastro' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="criar">
+                    <div class="form-grid">
+                        {% include "core/partials/campos_formulario.html" with cadastro=None %}
+                    </div>
+                    <button type="submit">Salvar</button>
+                </form>
+            </div>
+        </div>
 
-        <label>CPF:</label>
-        <input type="text" name="cpf" required><br>
+        <!-- FORM DE BUSCA PARA EDIÇÃO -->
+        <form method="get" action="{% url 'cadastro' %}">
+            <h2>Buscar CPF para Atualização</h2>
+            <label for="cpf_atualizar">CPF:</label>
+            <input type="text" name="cpf_atualizar" id="cpf_atualizar" required>
+            <button type="submit">Buscar CPF</button>
+        </form>
 
-        <label>Telefone:</label>
-        <input type="text" name="telefone" required><br>
+        <!-- FORM DE ATUALIZAÇÃO -->
+        <form action="{% url 'cadastro' %}" method="post">
+            {% csrf_token %}
+            <h2>Atualizar Cadastro</h2>
+            <input type="hidden" name="action" value="atualizar">
+            <input type="hidden" name="cpf_atualizar" value="{{ cadastro_para_editar.cpf|default:'' }}">
+            <div class="form-grid">
+                {% include "core/partials/campos_formulario.html" with cadastro=cadastro_para_editar %}
+            </div>
+            <button type="submit">Atualizar Cadastro</button>
+        </form>
 
-        <label>Email:</label>
-        <input type="email" name="email" required><br>
+        <!-- FORM DE EXCLUSÃO -->
+        <form action="{% url 'cadastro' %}" method="post" onsubmit="return confirmarExclusao()">
+            {% csrf_token %}
+            <h2>Excluir Cadastro</h2>
+            <input type="hidden" name="action" value="deletar">
+            <label for="cpf_deletar">CPF para Excluir:</label>
+            <input type="text" id="cpf_deletar" name="cpf_deletar" required>
+            <button type="submit">Excluir Cadastro</button>
+        </form>
 
-        <label>Estado:</label>
-        <input type="text" name="estado" required><br>
+        <!-- LISTAR TODOS -->
+        <form action="{% url 'cadastro' %}" method="get">
+            <h2>Listar Todos os Cadastros</h2>
+            <button type="submit" name="listar" value="true">Listar</button>
+        </form>
+    </div>
 
-        <label>Bairro:</label>
-        <input type="text" name="bairro" required><br>
-
-        <label>Sexo:</label>
-        <input type="text" name="sexo" required><br>
-
-        <label>Idade:</label>
-        <input type="number" name="idade" required><br>
-
-        <label>Assunto:</label>
-        <input type="text" name="assunto" required><br>
-
-        <label>Metodologia:</label>
-        <input type="text" name="metodologia" required><br>
-
-        <label>Cliente:</label>
-        <input type="text" name="cliente" required><br>
-
-        <label>Classe Social:</label>
-        <input type="text" name="classe_social" required><br>
-
-        <label>Ocupação:</label>
-        <input type="text" name="ocupacao" required><br>
-
-        <label>Nome do Recrutador:</label>
-        <input type="text" name="nome_recrutador" required><br>
-
-        <label>Digitador:</label>
-        <input type="text" name="digitador" required><br>
-
-        <label>Data de Participação:</label>
-        <input type="date" name="data_participacao"><br>
-
-        <button type="submit">Criar Cadastro</button>
-    </form>
-
-    <!-- FORM DE BUSCA PARA EDIÇÃO -->
-    <form method="get" action="{% url 'cadastro' %}">
-        <h2>Buscar CPF para Atualização</h2>
-        <label for="cpf_atualizar">CPF:</label>
-        <input type="text" name="cpf_atualizar" id="cpf_atualizar" required>
-        <button type="submit">Buscar CPF</button>
-    </form>
-
-    <!-- FORM DE ATUALIZAÇÃO -->
-    <form action="{% url 'cadastro' %}" method="post">
-        {% csrf_token %}
-        <h2>Atualizar Cadastro</h2>
-        <input type="hidden" name="action" value="atualizar">
-        <input type="hidden" name="cpf_atualizar" value="{{ cadastro_para_editar.cpf|default:'' }}">
-
-        <label>Nome Completo:</label>
-        <input type="text" name="nome_completo" value="{{ cadastro_para_editar.nome_completo|default:'' }}"><br>
-
-        <label>Telefone:</label>
-        <input type="text" name="telefone" value="{{ cadastro_para_editar.telefone|default:'' }}"><br>
-
-        <label>Email:</label>
-        <input type="email" name="email" value="{{ cadastro_para_editar.email|default:'' }}"><br>
-
-        <label>Estado:</label>
-        <input type="text" name="estado" value="{{ cadastro_para_editar.estado|default:'' }}"><br>
-
-        <label>Bairro:</label>
-        <input type="text" name="bairro" value="{{ cadastro_para_editar.bairro|default:'' }}"><br>
-
-        <label>Sexo:</label>
-        <input type="text" name="sexo" value="{{ cadastro_para_editar.sexo|default:'' }}"><br>
-
-        <label>Idade:</label>
-        <input type="number" name="idade" value="{{ cadastro_para_editar.idade|default:'' }}"><br>
-
-        <label>Assunto:</label>
-        <input type="text" name="assunto" value="{{ cadastro_para_editar.assunto|default:'' }}"><br>
-
-        <label>Metodologia:</label>
-        <input type="text" name="metodologia" value="{{ cadastro_para_editar.metodologia|default:'' }}"><br>
-
-        <label>Cliente:</label>
-        <input type="text" name="cliente" value="{{ cadastro_para_editar.cliente|default:'' }}"><br>
-
-        <label>Classe Social:</label>
-        <input type="text" name="classe_social" value="{{ cadastro_para_editar.classe_social|default:'' }}"><br>
-
-        <label>Ocupação:</label>
-        <input type="text" name="ocupacao" value="{{ cadastro_para_editar.ocupacao|default:'' }}"><br>
-
-        <label>Nome do Recrutador:</label>
-        <input type="text" name="nome_recrutador" value="{{ cadastro_para_editar.nome_recrutador|default:'' }}"><br>
-
-        <label>Digitador:</label>
-        <input type="text" name="digitador" value="{{ cadastro_para_editar.digitador|default:'' }}"><br>
-
-        <label>Data de Participação:</label>
-        <input type="date" name="data_participacao" value="{{ cadastro_para_editar.data_participacao|default:''|slice:":10" }}"><br>
-
-        <button type="submit">Atualizar Cadastro</button>
-    </form>
-
-    <!-- FORM DE EXCLUSÃO -->
-    <form action="{% url 'cadastro' %}" method="post" onsubmit="return confirmarExclusao()">
-        {% csrf_token %}
-        <h2>Excluir Cadastro</h2>
-        <input type="hidden" name="action" value="deletar">
-        <label for="cpf_deletar">CPF para Excluir:</label>
-        <input type="text" id="cpf_deletar" name="cpf_deletar" required><br>
-        <button type="submit">Excluir Cadastro</button>
-    </form>
-
-    <!-- LISTAR TODOS -->
-    <form action="{% url 'cadastro' %}" method="get">
-        <h2>Listar Todos os Cadastros</h2>
-        <button type="submit" name="listar" value="true">Listar</button>
-    </form>
-
-    <!-- SCRIPTS -->
     <script src="{% static 'core/js/scripts.js' %}"></script>
 </body>
 </html>

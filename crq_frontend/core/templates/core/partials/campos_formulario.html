@@ -1,0 +1,47 @@
+<label>Nome Completo:</label>
+<input type="text" name="nome_completo" value="{{ cadastro.nome_completo|default:'' }}">
+
+<label>CPF:</label>
+<input type="text" name="cpf" value="{{ cadastro.cpf|default:'' }}" {% if cadastro %}readonly{% endif %}>
+
+<label>Telefone:</label>
+<input type="text" name="telefone" value="{{ cadastro.telefone|default:'' }}">
+
+<label>Email:</label>
+<input type="email" name="email" value="{{ cadastro.email|default:'' }}">
+
+<label>Estado:</label>
+<input type="text" name="estado" value="{{ cadastro.estado|default:'' }}">
+
+<label>Bairro:</label>
+<input type="text" name="bairro" value="{{ cadastro.bairro|default:'' }}">
+
+<label>Sexo:</label>
+<input type="text" name="sexo" value="{{ cadastro.sexo|default:'' }}">
+
+<label>Idade:</label>
+<input type="number" name="idade" value="{{ cadastro.idade|default:'' }}">
+
+<label>Assunto:</label>
+<input type="text" name="assunto" value="{{ cadastro.assunto|default:'' }}">
+
+<label>Metodologia:</label>
+<input type="text" name="metodologia" value="{{ cadastro.metodologia|default:'' }}">
+
+<label>Cliente:</label>
+<input type="text" name="cliente" value="{{ cadastro.cliente|default:'' }}">
+
+<label>Classe Social:</label>
+<input type="text" name="classe_social" value="{{ cadastro.classe_social|default:'' }}">
+
+<label>Ocupação:</label>
+<input type="text" name="ocupacao" value="{{ cadastro.ocupacao|default:'' }}">
+
+<label>Nome do Recrutador:</label>
+<input type="text" name="nome_recrutador" value="{{ cadastro.nome_recrutador|default:'' }}">
+
+<label>Digitador:</label>
+<input type="text" name="digitador" value="{{ cadastro.digitador|default:'' }}">
+
+<label>Data de Participação:</label>
+<input type="date" name="data_participacao" value="{{ cadastro.data_participacao|default:''|slice:':10' }}">

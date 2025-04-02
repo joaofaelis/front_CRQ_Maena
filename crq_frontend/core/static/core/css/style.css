@@ -1,14 +1,16 @@
+/* Reset e base */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     padding: 0;
     font-family: 'Open Sans', sans-serif;
     background-color: #f5f5f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
 }
 
+/* Container para login e registro */
 .login-container {
     background-color: white;
     padding: 30px 25px;
@@ -16,58 +18,204 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     width: 320px;
     text-align: center;
+    margin: 60px auto;
 }
 
 .login-container h2 {
     margin-bottom: 20px;
 }
 
-label {
-    display: block;
-    text-align: left;
-    margin: 8px 0 4px 0;
-    font-weight: bold;
-    font-size: 0.9em;
+/* Container principal */
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    background-color: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.05);
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="date"],
-select {
+/* Títulos */
+h1, h2, h3 {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin: 8px 0 4px;
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+/* Inputs e selects */
+input[type="text"], input[type="email"], input[type="password"],
+input[type="number"], input[type="date"], select {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 1em;
-    box-sizing: border-box;
 }
 
+/* Botões */
 button {
     background-color: #4b0082;
     color: white;
     border: none;
-    padding: 12px;
+    padding: 12px 16px;
     border-radius: 8px;
     cursor: pointer;
-    width: 100%;
     font-weight: bold;
     font-size: 1em;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    width: 100%;
 }
 
 button:hover {
     background-color: #3a006b;
 }
 
+/* Botão sair */
+.logout-form {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+}
+
+.logout-button {
+    background: none;
+    border: none;
+    color: red;
+    font-weight: bold;
+    font-size: 0.95em;
+    cursor: pointer;
+}
+
+/* Mensagens */
 .messages {
     color: red;
     list-style: none;
     padding: 0;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-.registro-link {
-    margin-top: 15px;
+/* Resultado da busca */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    margin-bottom: 20px;
+    line-height: 1.6;
+    font-size: 0.95em;
+    word-break: break-word;
+}
+
+/* Separador */
+hr {
+    margin: 25px 0;
+}
+
+/* Responsividade */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: fadeInScale 0.3s ease;
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.close {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 24px;
+    color: #888;
+    cursor: pointer;
+    background: none;
+    border: none;
+    z-index: 1001;
+}
+
+.close:hover {
+    color: #000;
+}
+
+/* Botão nome + seta */
+.cadastro-nome {
+    background: none;
+    border: none;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    padding: 5px 0;
+    color: #4b0082;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cadastro-nome:hover {
+    text-decoration: underline;
+}
+
+.seta {
     font-size: 0.9em;
+}
+
+/* Detalhes escondidos */
+.cadastro-detalhes {
+    background: #f0f0f0;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-top: 8px;
+    line-height: 1.5;
 }
