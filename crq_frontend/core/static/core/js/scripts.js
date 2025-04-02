@@ -49,3 +49,10 @@ document.addEventListener("keydown", function(event) {
         fecharModalCadastro();
     }
 });
+// Fecha o modal ao pressionar ESC
+document.addEventListener("keydown", function(event) {
+    const modal = document.getElementById("modalCadastro");
+    if (event.key === "Escape" && modal.classList.contains("show")) {
+        fecharModalCadastro();
+    }
+});
